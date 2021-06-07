@@ -163,7 +163,7 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-editing-style 'emacs
 
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
@@ -565,6 +565,8 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
+  (add-to-list 'load-path "~/.spacemacs.d/")
 (display-time-mode 1)
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
@@ -573,8 +575,11 @@ before packages are loaded."
   (interactive)
   (revert-buffer t (not (buffer-modified-p)) t))
 (global-set-key [(control f5)] 'refresh-file)
-)
 
+(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+
+(require 'init-keybindings)
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
