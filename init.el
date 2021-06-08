@@ -88,6 +88,41 @@ This function should only modify configuration layer settings."
 This function is called at the very beginning of Spacemacs startup,
 before layer configuration.
 It should only modify the values of Spacemacs settings."
+
+  (require 'cask "~/.cask/cask.el")
+  (cask-initialize)    ; 类似于 package-initialize
+
+  (require 'pallet)
+  (pallet-mode t)      ; 激活 pallet, 在安装包时将 Cask 文件写入相应信息
+
+  (require 'org-install)
+  (require 'ob-tangle)
+
+  (setq byte-compile-warnings '(cl-functions))
+
+  (add-to-list 'load-path "~/.spacemacs.d/lisp/")
+
+  (defun open-my-init-file()
+    (interactive)
+    (find-file "~/.spacemacs.d/init.el"))
+
+  (defun refresh-file ()
+    (interactive)
+    (revert-buffer t (not (buffer-modified-p)) t))
+
+  (setq custom-file "~/.spacemacs.d/lisp/custom.el")
+
+  (load-file custom-file)
+
+  (require 'init-packages)
+  (require 'init-ui)
+  (require 'init-better-defaults)
+  (require 'init-org)
+  (require 'init-keybindings)
+
+  (setq tramp-ssh-controlmaster-options
+        "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
+
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -531,24 +566,11 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-;; local
-  (setq configuration-layer-elpa-archives
-      '(("melpa" . "C:/Users/ckang/AppData/Roaming/.elpa-mirror/melpa/")
-        ("org"   . "C:/Users/ckang/AppData/Roaming/.elpa-mirror/org/")
-        ("gnu"   . "C:/Users/ckang/AppData/Roaming/.elpa-mirror/gnu/")))
 
-  (setq tramp-ssh-controlmaster-options
-        "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
   (require 'dired-quick-sort)
   (dired-quick-sort-setup)
   (setq dired-quick-sort-suppress-setup-warning t)
-
-  (defun refresh-file ()
-    (interactive)
-    (revert-buffer t (not (buffer-modified-p)) t))
-
-  (global-set-key [(f5)] 'refresh-file)
 )
 
 
@@ -565,20 +587,9 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
-
-  (add-to-list 'load-path "~/.spacemacs.d/")
 (display-time-mode 1)
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
-
-(defun refresh-file ()
-  (interactive)
-  (revert-buffer t (not (buffer-modified-p)) t))
-(global-set-key [(control f5)] 'refresh-file)
-
-(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-
-(require 'init-keybindings)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -614,7 +625,7 @@ This function is called at the very end of Spacemacs initialization."
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
  '(package-selected-packages
-   '(monokai-theme youdao-dictionary yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode wrap-region winum which-key wgrep web-mode web-beautify volatile-highlights visual-regexp-steroids vi-tilde-fringe uuidgen use-package unfill undo-tree treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toml-mode toc-org tiny tide terminal-here tagedit symon symbol-overlay string-inflection string-edit ssh-agency sphinx-doc spaceline-all-the-icons sound-wav smex smeargle slim-mode sicp shell-pop scss-mode sass-mode ron-mode rjsx-mode rime reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racket-mode racer quickrun pytest pyenv-mode py-isort pug-mode prodigy prettier-js popwin poetry plantuml-mode pippel pipenv pip-requirements peep-dired pcre2el password-generator paradox pangu-spacing ox-hugo overseer osx-trash osx-clipboard orgit org-superstar org-super-agenda org-rich-yank org-projectile org-present org-pomodoro org-mime org-download org-contrib org-cliplink org-brain opencl-mode open-junk-file ob-typescript ob-restclient ob-http npm-mode nov nose nodejs-repl nameless mwim multi-term multi-line modus-operandi-theme mmm-mode markdown-toc macrostep lsp-ui lsp-python-ms lsp-pyright lsp-origami lsp-latex lsp-ivy lsp-haskell lorem-ipsum live-py-mode lispyville link-hint launchctl json-navigator json-mode js2-refactor js-doc ivy-yasnippet ivy-xref ivy-rtags ivy-purpose ivy-hydra ivy-avy indent-guide importmagic impatient-mode ibuffer-projectile hybrid-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation highlight-global helm-make helm-github-stars helm-ag haskell-snippets grip-mode graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot glsl-mode gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-ycmd flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-package flycheck-haskell flycheck-elsa flx-ido find-file-in-project find-by-pinyin-dired fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help engine-mode emr emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump drag-stuff dotenv-mode discover-my-major dired-quick-sort diminish deft define-word dap-mode dante cython-mode cuda-mode cpp-auto-include counsel-projectile counsel-gtags counsel-css company-ycmd company-web company-statistics company-rtags company-restclient company-reftex company-math company-lua company-emoji company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode color-identifiers-mode cmm-mode cmake-font-lock clojure-snippets clean-aindent-mode cider-eval-sexp-fu cider chinese-conv centered-cursor-mode ccls cargo caps-lock cal-china-x browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk attrap anki-editor aggressive-indent ace-pinyin ace-link ac-ispell 4clojure))
+   '(zzz-to-char pallet commander monokai-theme youdao-dictionary yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode wrap-region winum which-key wgrep web-mode web-beautify volatile-highlights visual-regexp-steroids vi-tilde-fringe uuidgen use-package unfill undo-tree treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toml-mode toc-org tiny tide terminal-here tagedit symon symbol-overlay string-inflection string-edit ssh-agency sphinx-doc spaceline-all-the-icons sound-wav smex smeargle slim-mode sicp shell-pop scss-mode sass-mode ron-mode rjsx-mode rime reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racket-mode racer quickrun pytest pyenv-mode py-isort pug-mode prodigy prettier-js popwin poetry plantuml-mode pippel pipenv pip-requirements peep-dired pcre2el password-generator paradox pangu-spacing ox-hugo overseer osx-trash osx-clipboard orgit org-superstar org-super-agenda org-rich-yank org-projectile org-present org-pomodoro org-mime org-download org-contrib org-cliplink org-brain opencl-mode open-junk-file ob-typescript ob-restclient ob-http npm-mode nov nose nodejs-repl nameless mwim multi-term multi-line modus-operandi-theme mmm-mode markdown-toc macrostep lsp-ui lsp-python-ms lsp-pyright lsp-origami lsp-latex lsp-ivy lsp-haskell lorem-ipsum live-py-mode lispyville link-hint launchctl json-navigator json-mode js2-refactor js-doc ivy-yasnippet ivy-xref ivy-rtags ivy-purpose ivy-hydra ivy-avy indent-guide importmagic impatient-mode ibuffer-projectile hybrid-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation highlight-global helm-make helm-github-stars helm-ag haskell-snippets grip-mode graphviz-dot-mode google-translate google-c-style golden-ratio gnuplot glsl-mode gitignore-templates gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ gist gh-md ggtags fuzzy font-lock+ flyspell-correct-ivy flycheck-ycmd flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-package flycheck-haskell flycheck-elsa flx-ido find-file-in-project find-by-pinyin-dired fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help engine-mode emr emojify emoji-cheat-sheet-plus emmet-mode elisp-slime-nav editorconfig dumb-jump drag-stuff dotenv-mode discover-my-major dired-quick-sort diminish deft define-word dap-mode dante cython-mode cuda-mode cpp-auto-include counsel-projectile counsel-gtags counsel-css company-ycmd company-web company-statistics company-rtags company-restclient company-reftex company-math company-lua company-emoji company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode color-identifiers-mode cmm-mode cmake-font-lock clojure-snippets clean-aindent-mode cider-eval-sexp-fu cider chinese-conv centered-cursor-mode ccls cargo caps-lock cal-china-x browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk attrap anki-editor aggressive-indent ace-pinyin ace-link ac-ispell 4clojure))
  '(pdf-view-midnight-colors '("#655370" . "#fbf8ef"))
  '(tool-bar-mode nil))
 (custom-set-faces
@@ -622,5 +633,5 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family #("微软雅黑" 0 4 (charset chinese-gbk)) :foundry "outline" :slant normal :weight semi-bold :height 123 :width normal)))))
+ )
 )
