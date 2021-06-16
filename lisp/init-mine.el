@@ -1,3 +1,4 @@
+(setq inhibit-startup-screen t)
 (require 'use-package)
 (add-to-list 'load-path "~/.spacemacs.d/lisp/")
 
@@ -14,6 +15,10 @@
 
 (require 'init-google-translate)
 (require 'init-mine-iflipb)
+(require 'init-mine-latex)
+(require 'init-mine-bookmark)
+(require 'init-mine-hydra)
+(require 'init-mine-smartparens)
 
 (use-package goto-chg
   :ensure t
@@ -25,8 +30,6 @@
 (global-set-key (kbd "M-s i") 'counsel-imenu)
 
 (global-set-key (kbd "M-c") 'spacemacs/toggle-maximize-buffer)
-
-(global-set-key (kbd "C-o") '(kbd "C-c \@"))
 
 ;; 自动缩进
 (defun indent-buffer()
@@ -137,72 +140,12 @@
 ;; yes or no
 (fset 'yes-or-no-p 'y-or-n-p)
 
-;; 延迟加载
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+;; ;; 延迟加载
+;; (with-eval-after-load 'dired
+;;   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
 
 (windmove-default-keybindings 'control)
 (windswap-default-keybindings 'control 'shift)
 
-(require 'cdlatex)
-;; 解决显示Unicode字符的卡顿问题
-(setq inhibit-compacting-font-caches t)
-
-;; 汉字默认字体为Kaiti(楷体)，可改为其它字体
-(set-fontset-font "fontset-default" 'han
-		              "simsun")
-;; 数学符号默认字体为Cambria Math
-(set-fontset-font "fontset-default" 'symbol
- 		              "Cambria Math")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 以下为LaTeX mode相关设置
-;; (setq-default TeX-master nil) ;; 编译时问询主文件名称
-;; (setq TeX-parse-selt t) ;; 对新文件自动解析(usepackage, bibliograph, newtheorem等信息)
-;; PDF正向搜索相关设置
-(setq TeX-PDF-mode t) 
-(setq TeX-source-correlate-mode t) 
-(setq TeX-source-correlate-method 'synctex) 
-(setq TeX-view-program-list 
-      '(("Sumatra PDF" ("\"c:/Users/ckang/AppData/Local/SumatraPDF/SumatraPDF.exe\" -reuse-instance" (mode-io-correlate " -forward-search %b %n ") " %o")))) 
-
-;; 打开TeX文件时应该加载的mode/执行的命令
-(defun my-latex-hook ()
-  (turn-on-cdlatex) ;; 加载cdlatex
-  (outline-minor-mode) ;; 加载outline mode
-  (turn-on-reftex)  ;; 加载reftex
-  ;; (auto-fill-mode)  ;; 加载自动换行
-  (flyspell-mode)   ;; 加载拼写检查 (需要安装aspell)
-  ;; (TeX-fold-mode t) ;; 加载TeX fold mode
-  ;; (outline-hide-body) ;; 打开文件时只显示章节标题
-  (assq-delete-all 'output-pdf TeX-view-program-selection)    ;; 以下两行是正向搜索相关设置
-  (add-to-list 'TeX-view-program-selection '(output-pdf "Sumatra PDF"))
-  )
-(add-hook 'LaTeX-mode-hook 'my-latex-hook)
-;; LaTeX mode相关设置完毕
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; 王垠提供的小工具: 按“%”匹配括号的小程序
-(defun match-paren (arg)
-  "Go to the matching paren if on a paren; otherwise insert %."
-  (interactive "p")
-  (cond ((looking-at "\\s\(") (forward-list 1) (backward-char 1))
-	      ((looking-at "\\s\)") (forward-char 1) (backward-list 1))
-	      (t (self-insert-command (or arg 1)))))
-(global-set-key "%" 'match-paren)
-
-;; 调整自动补全字符串的优先级顺序
-(setq hippie-expand-try-functions-list 
-      '(try-expand-dabbrev
-	      try-expand-dabbrev-visible
-	      try-expand-dabbrev-all-buffers
-	      try-expand-dabbrev-from-kill
-	      try-complete-file-name-partially
-	      try-complete-file-name
-	      try-expand-all-abbrevs
-	      try-expand-list
-	      try-expand-line
-	      try-complete-lisp-symbol-partially
-	      try-complete-lisp-symbol))
 
 (provide 'init-mine)
