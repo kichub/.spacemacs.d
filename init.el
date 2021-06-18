@@ -33,6 +33,8 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     ;; html
+     ;; csv
      markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -93,8 +95,12 @@ It should only modify the values of Spacemacs settings."
   (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
   (require 'cask "~/.cask/cask.el")
   (cask-initialize)    ; 类似于 package-initialize
-  (require 'pallet)
-  (pallet-mode t)      ; 激活 pallet, 在安装包时将 Cask 文件写入相应信息
+  (require 'use-package)
+  (use-package pallet
+    :ensure t
+    :config
+    (pallet-mode t)      ; 激活 pallet, 在安装包时将 Cask 文件写入相应信息
+    )
 
   (setq-default
    ;; If non-nil then enable support for the portable dumper. You'll need
@@ -169,7 +175,7 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-editing-style 'emacs
 
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
@@ -543,6 +549,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; (org-babel-load-file  "~/.spacemacs.d/me.org")
   (add-to-list 'load-path "~/.spacemacs.d/lisp/")
   (require 'init-mine)
+  (load-file "~/.spacemacs.d/lisp/init-mine-custom.el")
   )
 
 
@@ -553,13 +560,14 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 ;; dump.")
 
 
-;; (defun dotspacemacs/user-config ()
-;;   "Configuration for user code:
-;; This function is called at the very end of Spacemacs startup, after layer
-;; configuration.
-;; Put your configuration code here, except for variables that should be set
-;; before packages are loaded."
-;;   )
+(defun dotspacemacs/user-config ()
+  "Configuration for user code:
+This function is called at the very end of Spacemacs startup, after layer
+configuration.
+Put your configuration code here, except for variables that should be set
+before packages are loaded."
+  (setq history-delete-duplicates t)
+  )
 
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -575,6 +583,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(aggressive-indent-excluded-modes
+   '(html-mode elm-mode haskell-mode inf-ruby-mode makefile-mode makefile-gmake-mode python-mode sql-interactive-mode text-mode yaml-mode org-mode))
  '(cdlatex-math-symbol-alist '((57 ("\\cap" "\\bigcap" "\\prod"))))
  '(cdlatex-paired-parens "$[{(<")
  '(echo-keystrokes 0.01)
@@ -588,10 +598,19 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
  '(google-translate-show-phonetic nil)
  '(helm-echo-input-in-header-line t)
  '(highlight-parentheses-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
- '(iflipb-ignore-buffers "^[--------]")
+ '(iflipb-ignore-buffers "^[*]")
  '(menu-bar-mode nil)
+ '(org-confirm-babel-evaluate nil)
+ '(org-default-notes-file (concat org-directory "/notes.org"))
+ '(org-directory "~/Sync/orgfiles")
+ '(org-export-html-postamble nil)
+ '(org-export-with-toc nil)
+ '(org-hide-leading-stars t)
+ '(org-src-fontify-natively t)
+ '(org-startup-folded 'overview)
+ '(org-startup-indented t)
  '(package-selected-packages
-   '(bm company-math math-symbol-lists mmm-mode markdown-toc markdown-mode gh-md multiple-cursors centered-window yasnippet-snippets yasnippet unfill org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim htmlize gnuplot flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary cdlatex windswap counsel swiper iflipb ivy pallet solarized-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word company-statistics company-auctex column-enforce-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))
+   '(beacon bm company-math math-symbol-lists mmm-mode markdown-toc markdown-mode gh-md multiple-cursors yasnippet-snippets yasnippet unfill org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim htmlize gnuplot flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck auto-dictionary cdlatex windswap counsel swiper iflipb ivy pallet solarized-theme ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word company-statistics company-auctex column-enforce-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-compile auctex-latexmk adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))
  '(preview-scale-function 2.2)
  '(tooltip-resize-echo-area t))
 (custom-set-faces
